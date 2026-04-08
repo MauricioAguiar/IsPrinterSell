@@ -1,0 +1,14 @@
+{% extends "sales/base.html" %}
+{% block title %}New Client — Alder{% endblock %}
+{% block content %}
+  <h1>New Client</h1>
+  <form method="post" class="card">
+    {% csrf_token %}
+    <label>Name</label>{{ form.name }}
+    <label>Phone (E.164)</label>{{ form.phone_e164 }}
+    <label>Email</label>{{ form.email }}
+    <label>Notes</label>{{ form.notes }}
+    {% if form.errors %}<div class="msg error">{{ form.errors }}</div>{% endif %}
+    <p style="margin-top:1rem"><button type="submit">Save</button></p>
+  </form>
+{% endblock %}

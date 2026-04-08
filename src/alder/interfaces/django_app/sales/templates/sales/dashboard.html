@@ -1,0 +1,28 @@
+{% extends "sales/base.html" %}
+{% block title %}Dashboard — Alder{% endblock %}
+{% block content %}
+  <h1>Dashboard</h1>
+  <div class="grid">
+    <div class="kpi"><div class="l">Clients</div><div class="v">{{ clients_total }}</div></div>
+    <div class="kpi"><div class="l">Recent sales</div><div class="v">{{ recent_sales|length }}</div></div>
+    <div class="kpi"><div class="l">Revenue (window)</div><div class="v">R$ {{ revenue_window|floatformat:2 }}</div></div>
+  </div>
+
+  <h2>Recent sales</h2>
+  <table>
+    <thead><tr><th>ID</th><th>Client</th><th>Items</th><th>Status</th><th>Total</th></tr></thead>
+    <tbody>
+    {% for s in recent_sales %}
+      <tr>
+        <td><a href="{% url 'sales:detail' s.id %}">#{{ s.id }}</a></td>
+        <td>{{ s.client_id }}</td>
+        <td>{{ s.items|length }}</td>
+        <td><span class="pill {{ s.status.value }}">{{ s.status.value }}</span></td>
+        <td>{{ s.total }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5">No sales yet — <a href="{% url 'sales:new' %}">register one</a>.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

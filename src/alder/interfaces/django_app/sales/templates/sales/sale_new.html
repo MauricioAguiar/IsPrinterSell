@@ -1,0 +1,38 @@
+{% extends "sales/base.html" %}
+{% block title %}New Sale — Alder{% endblock %}
+{% block content %}
+  <h1>New Sale</h1>
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="card">
+      <label>Client</label>
+      <select name="client_id" required>
+        {% for c in clients %}
+          <option value="{{ c.id }}">{{ c.name }} — {{ c.phone_e164 }}</option>
+        {% endfor %}
+      </select>
+      <label>Due date</label>
+      {{ sale_form.due_date }}
+      <label>Notes</label>
+      {{ sale_form.notes }}
+    </div>
+
+    <h2>Items</h2>
+    <input type="hidden" name="item_count" id="item_count" value="{{ item_forms|length }}">
+    <div id="items">
+    {% for f in item_forms %}
+      <div class="card">
+        <label>Item name</label>{{ f.name }}
+        <label>Quantity</label>{{ f.quantity }}
+        <label>Filament (g)</label>{{ f.filament_grams }}
+        <label>Print hours</label>{{ f.print_hours }}
+        <label>Customisation hours</label>{{ f.customization_hours }}
+        <label>Painting hours</label>{{ f.painting_hours }}
+      </div>
+    {% endfor %}
+    </div>
+
+    <button type="submit">Register sale</button>
+  </form>
+{% endblock %}

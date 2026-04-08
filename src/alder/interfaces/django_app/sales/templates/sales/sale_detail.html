@@ -1,0 +1,46 @@
+{% extends "sales/base.html" %}
+{% block title %}Sale #{{ sale.id }} — Alder{% endblock %}
+{% block content %}
+  <h1>Sale #{{ sale.id }} <span class="pill {{ sale.status.value }}">{{ sale.status.value }}</span></h1>
+
+  <div class="card">
+    <strong>Client:</strong> {{ client.name }}<br>
+    <strong>Phone:</strong> {{ client.phone_e164 }}<br>
+    <strong>Created:</strong> {{ sale.created_at }}<br>
+    {% if sale.due_date %}<strong>Due:</strong> {{ sale.due_date }}<br>{% endif %}
+    <strong>Notes:</strong> {{ sale.notes|default:"—" }}
+  </div>
+
+  <h2>Items</h2>
+  <table>
+    <thead><tr>
+      <th>Name</th><th>Qty</th><th>Material</th><th>Machine</th>
+      <th>Labor</th><th>Failure +15%</th><th>Markup</th><th>Unit</th><th>Line</th>
+    </tr></thead>
+    <tbody>
+    {% for i in sale.items %}
+      <tr>
+        <td>{{ i.name }}</td>
+        <td>{{ i.quantity }}</td>
+        <td>{{ i.breakdown.material_cost }}</td>
+        <td>{{ i.breakdown.machine_cost }}</td>
+        <td>{{ i.breakdown.labor_cost }}</td>
+        <td>{{ i.breakdown.failure_buffer }}</td>
+        <td>x{{ i.breakdown.markup_multiplier }}</td>
+        <td>{{ i.breakdown.unit_price }}</td>
+        <td>{{ i.breakdown.total }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr><td colspan="8" style="text-align:right"><strong>TOTAL</strong></td><td><strong>{{ sale.total }}</strong></td></tr>
+    </tfoot>
+  </table>
+
+  {% if sale.status.value == "pending" or sale.status.value == "in_production" %}
+    <form method="post" action="{% url 'sales:mark_ready' sale.id %}" style="margin-top:1rem">
+      {% csrf_token %}
+      <button type="submit">Mark Ready → notify client</button>
+    </form>
+  {% endif %}
+{% endblock %}
